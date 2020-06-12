@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
+using System.Threading.Tasks.Dataflow;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace ERC_Test_Project.Controllers
 {
@@ -20,14 +23,13 @@ namespace ERC_Test_Project.Controllers
             _logger = logger;
         }
 
-        
-
         [HttpGet]
         public IEnumerable<Customer> Get()
         {
             List<Customer> result = new List<Customer>();
 
-            string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
+            //string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
+            string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
             SqlConnection con = new SqlConnection(connectionString);
             SqlDataReader reader = null;
             try
@@ -71,7 +73,38 @@ namespace ERC_Test_Project.Controllers
      
             return result.ToArray();
         }
-        
-    }
-    
+
+        [HttpPost]
+        public void Post()
+        {
+            Task<string> content;
+            using (var reader = new StreamReader(Request.Body))
+                content = reader.ReadToEndAsync();
+            string[] sent = content.Result.Split('|');
+
+            System.Diagnostics.Debug.WriteLine(sent[0]);
+            System.Diagnostics.Debug.WriteLine(sent[1]);
+            System.Diagnostics.Debug.WriteLine(sent[2]);
+
+            //string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
+            string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
+            SqlConnection con = new SqlConnection(connectionString);
+            try
+            {
+                con.Open();
+                SqlCommand command = new SqlCommand("update customers set " + sent[1] + " = '" + sent[2] + "' where customerID= '" + sent[0] +"';");
+                command.Connection = con;
+                command.ExecuteReader();
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+    } 
+   
 }
