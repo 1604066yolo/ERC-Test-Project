@@ -1,0 +1,68 @@
+#strikethrough {
+    text-decoration: line-through;
+}
+
+#bold {
+    color: white;
+    background: rgb(70, 130, 180);
+}
+
+.button-generic {
+    /*border: none;*/
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 6px;
+    cursor: pointer;
+    background-color: steelblue;
+}
+
+.button-Pencil{
+  background-size: cover;
+  background-image: url('https://lh3.googleusercontent.com/-sgtSN3Xi5pQ/XuO8gfclnVI/AAAAAAAAAI0/kKK529nUi0csv-o_hjgtjCO3dpSceB6NwCK8BGAsYHg/s512/EditIcon.png');
+}
+
+.button-Add {
+    border-color: steelblue;
+}
+
+.button-Add:hover, .button-Add:focus {
+    color: steelblue;
+    background-color: white;
+ }
+
+.button-Done {
+    border-color: green;
+    color: green;
+    background-color: white;
+}
+
+.button-Done:hover, .button-Done:focus {
+    color: white;
+    background-color: green;
+}
+
+.button-Refresh {
+    border-color: steelblue;
+}
+
+.button-Refresh:hover, .button-Refresh:focus {
+    color: steelblue;
+    background-color: white;
+}
+
+.button-ShowInactiveUsers {
+    border-color: steelblue;
+}
+
+.button-ShowInactiveUsers:hover, .button-ShowInactiveUsers:focus{
+    color: steelblue;
+    background-color:white;
+}
+
+.form-input {
+  float: left;
+}

@@ -4,35 +4,79 @@
 
 <p *ngIf="!customers"><em>Loading...</em></p>
 
-<table class='table table-striped table-responsive-md text-center' aria-labelledby="tableLabel" *ngIf="customers">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Company Name</th>
-      <th>Name</th>
-      <th>Job Title</th>
-      <th>Address</th>
-      <th>City</th>
-      <th>Region</th>
-      <th>Postal Code</th>
-      <th>Country</th>
-      <th>Phone Number</th>
-      <th>Fax Number</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr *ngFor="let customer of customers">
-          <td>{{ customer.id }}</td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'companyName', $event)">{{ customer.companyName }}</span></td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'contactName', $event)">{{ customer.name}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'contactTitle', $event)">{{ customer.title}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'Address', $event)">{{ customer.address}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'City', $event)">{{ customer.city}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'Region', $event)">{{ customer.region}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'postalCode', $event)">{{ customer.postalCode}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'country', $event)">{{ customer.country}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'phone', $event)">{{ customer.phoneNumber}}</span> </td>
-          <td> <span contenteditable="true" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'fax', $event)">{{ customer.fax}}</span> </td>
-      </tr>
-  </tbody>
+<!--><button class="button-generic button-Add" type="button" (click)="basicModal.show()">Add Customer (Popup)</button> <\!-->
+
+<button class="button-generic button-Add" type="button" (click)="addCustomer()">Add Customer</button>
+
+<button *ngIf="showDone" style="float:right;" class="button-generic button-Done" type="button" (click)="displayOff()">Done</button>
+
+<button style="float:right;" class="button-generic button-ShowInactiveUsers" type="button" (click)="unhide()">Unhide All</button>
+
+<button style="float:right;" class="button-generic button-Refresh" type="button" (click)="refreshTable()">Refresh Table</button>
+
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <form>
+                    <br>
+                    <br>
+                    ID: <input class="form-input" type="text" id="id" name="id"><br>
+                    Company Name: <input class="form-input" type="text" id="companyName" name="companyName"><br>
+                    Contact Name: <input class="form-input" type="text" id="contactName" name="contactName"><br>
+                    Contact Title: <input class="form-input" type="text" id="contactTitle" name="contactTitle"><br>
+                    Address: <input class="form-input" type="text" id="Address" name="Address"><br>
+                    City: <input class="form-input" type="text" id="City" name="City"><br>
+                    Region: <input class="form-input" type="text" id="Region" name="Region"><br>
+                    Postal Code: <input class="form-input" type="text" id="postalCode" name="postalCode"><br>
+                    Country: <input class="form-input" type="text" id="country" name="country"><br>
+                    Phone: <input class="form-input" type="text" id="phone" name="phone"><br>
+                    Fax: <input class="form-input" type="text" id="fax" name="fax"><br>
+                </form>
+                <h4 class="modal-title w-100" id="myModalLabel">Add New Customer</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect>Add Customer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="customers" class='table table-striped table-responsive-md text-center' aria-labelledby="tableLabel" *ngIf="customers">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>ID</th>
+            <th>Company Name</th>
+            <th>Name</th>
+            <th>Job Title</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Region</th>
+            <th>Postal Code</th>
+            <th>Country</th>
+            <th>Phone Number</th>
+            <th>Fax Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let customer of customers" [attr.id]="hidden.includes(customer.id) ? 'strikethrough' : editable.includes(customer.id) ? 'bold' : ''">
+            <td><div><img style="cursor: pointer;" (click)="hidden.includes(customer.id) ? eyeShow(customer.id) : eyeHide(customer.id)" [attr.src]="hidden.includes(customer.id) ? shownImgSrc : hiddenImgSrc" width="26" height="26"></div></td>
+            <td><div><img style="cursor: pointer;" (click)="editable.includes(customer.id) ? editOff(customer.id) : editOn(customer.id)" [attr.src]="editable.includes(customer.id) ? checkImgSrc : editImgSrc" width="26" height="26"></div></td>
+            <td>{{ customer.id }}</td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'companyName', $event)">{{ customer.companyName }}</span></td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'contactName', $event)">{{ customer.name}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'contactTitle', $event)">{{ customer.title}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'Address', $event)">{{ customer.address}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'City', $event)">{{ customer.city}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'Region', $event)">{{ customer.region}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'postalCode', $event)">{{ customer.postalCode}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'country', $event)">{{ customer.country}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'phone', $event)">{{ customer.phoneNumber}}</span> </td>
+            <td> <span [attr.contenteditable]="editable.includes(customer.id)" (keyup)="changeValue($event)" (blur)="updateList(customer.id, 'fax', $event)">{{ customer.fax}}</span> </td>
+        </tr>
+    </tbody>
 </table>

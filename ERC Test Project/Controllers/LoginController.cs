@@ -28,14 +28,14 @@ namespace ERC_Test_Project.Controllers
         {
             List<Customer> result = new List<Customer>();
 
-            //string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
-            string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
+            string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
+            //string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
             SqlConnection con = new SqlConnection(connectionString);
             SqlDataReader reader = null;
             try
             {
                 con.Open();
-                SqlCommand command = new SqlCommand("select * from [dbo].[Customers]");
+                SqlCommand command = new SqlCommand("select * from [dbo].[Customers] where active = 1");
                 command.Connection = con;
                 reader = command.ExecuteReader();
 
@@ -49,14 +49,14 @@ namespace ERC_Test_Project.Controllers
                         title = (string)reader[3],
                         address = (string)reader[4],
                         city = (string)reader[5],
-                        region = reader[6] == DBNull.Value ? "" : (string) reader[6],
+                        region = reader[6] == DBNull.Value ? "" : (string)reader[6],
                         postalCode = reader[7] == DBNull.Value ? "" : (string)reader[7],
                         country = (string)reader[8],
                         phoneNumber = (string)reader[9],
                         fax = reader[10] == DBNull.Value ? "" : (string)reader[10]
                     });
                 }
-            } 
+            }
             finally
             {
                 if (reader != null)
@@ -68,9 +68,9 @@ namespace ERC_Test_Project.Controllers
                     con.Close();
                 }
             }
-            
 
-     
+
+
             return result.ToArray();
         }
 
@@ -82,19 +82,43 @@ namespace ERC_Test_Project.Controllers
                 content = reader.ReadToEndAsync();
             string[] sent = content.Result.Split('|');
 
-            System.Diagnostics.Debug.WriteLine(sent[0]);
-            System.Diagnostics.Debug.WriteLine(sent[1]);
-            System.Diagnostics.Debug.WriteLine(sent[2]);
-
-            //string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
-            string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
+            string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
+            //string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
             SqlConnection con = new SqlConnection(connectionString);
+
+            
+          
             try
             {
                 con.Open();
-                SqlCommand command = new SqlCommand("update customers set " + sent[1] + " = '" + sent[2] + "' where customerID= '" + sent[0] +"';");
-                command.Connection = con;
-                command.ExecuteReader();
+
+                if (sent[0] == "edit")
+                {
+                    SqlCommand command = new SqlCommand("update customers set " + sent[2] + " = '" + sent[3] + "' where customerID= '" + sent[1] + "';");
+                    command.Connection = con;
+                    command.ExecuteReader();
+                }
+                else if(sent[0] == "add") {
+                    Random random = new Random();
+                    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    string randomString = new string(Enumerable.Repeat(chars, 2).Select(s => s[random.Next(s.Length)]).ToArray());
+                    randomString = "AAA" + randomString;
+                    SqlCommand command = new SqlCommand("insert into customers values ('" + randomString + "', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 1);");
+                    command.Connection = con;
+                    command.ExecuteReader();
+                }
+                else if (sent[0] == "hide")
+                {
+                    SqlCommand command = new SqlCommand("update customers set active = 0 where customerId = '" + sent[1] + "';");
+                    command.Connection = con;
+                    command.ExecuteReader();
+                  }
+                else if (sent[0] == "unhide")
+                {
+                    SqlCommand command = new SqlCommand("update customers set active = 1;");
+                    command.Connection = con;
+                    command.ExecuteReader();
+                }
             }
             finally
             {
@@ -105,6 +129,6 @@ namespace ERC_Test_Project.Controllers
             }
         }
 
-    } 
-   
+    }
+
 }
