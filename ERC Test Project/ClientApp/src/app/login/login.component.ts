@@ -114,7 +114,7 @@ export class LoginComponent {
   }
 
   refreshTable() {
-    if (this.showHidden) {
+    if (!this.showHidden) {
       this.http.get<Customer[]>(this.baseUrl).subscribe(result => {
         this.customers = result.filter(n => n.active == 1);
       }, error => console.error(error));

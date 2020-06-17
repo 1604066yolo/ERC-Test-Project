@@ -11,6 +11,10 @@
   background-color: steelblue;
 }
 
+input {
+    float:right;
+}
+
 .button-Add {
     border-color: steelblue;
 }
@@ -19,6 +23,7 @@
         color: steelblue;
         background-color: white;
 }
-.form-input {
-    
+
+.button-AddConfirm {
+    float: right;
 }

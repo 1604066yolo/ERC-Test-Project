@@ -10,7 +10,7 @@ import { LoginComponent } from '../login/login.component';
 })
 export class AddPopupComponent {
 
-  countries: any = ['US', 'China', 'Africa', 'South Frica', 'North Arfica'];
+  countries: any = ['Argentina', 'Austria', 'Belgium', 'Canada', 'Denmark', 'Finland', 'France', 'Germany', 'Ireland', 'Italy', 'Mexico', 'Norway', 'Poland', 'Portugal', 'Puerto Rico', 'Spain', 'Sweden', 'Switzerland', 'UK', 'USA', 'Venezuela', 'Virgin Islands'];
 
   http: HttpClient;
   baseUrl: string;
