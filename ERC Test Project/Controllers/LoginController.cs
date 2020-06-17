@@ -35,7 +35,7 @@ namespace ERC_Test_Project.Controllers
             try
             {
                 con.Open();
-                SqlCommand command = new SqlCommand("select * from [dbo].[Customers] where active = 1");
+                SqlCommand command = new SqlCommand("select * from [dbo].[Customers]");
                 command.Connection = con;
                 reader = command.ExecuteReader();
 
@@ -53,7 +53,8 @@ namespace ERC_Test_Project.Controllers
                         postalCode = reader[7] == DBNull.Value ? "" : (string)reader[7],
                         country = (string)reader[8],
                         phoneNumber = (string)reader[9],
-                        fax = reader[10] == DBNull.Value ? "" : (string)reader[10]
+                        fax = reader[10] == DBNull.Value ? "" : (string)reader[10],
+                        active = (int) reader[11]
                     });
                 }
             }
@@ -81,7 +82,6 @@ namespace ERC_Test_Project.Controllers
             using (var reader = new StreamReader(Request.Body))
                 content = reader.ReadToEndAsync();
             string[] sent = content.Result.Split('|');
-
             string connectionString = "Server=tcp:erc-internship-group.database.windows.net,1433;Database=Northwind;User ID=common;Password=Cville2020;Trusted_Connection=False;Encrypt=True;";
             //string connectionString = "Server=KARTHIKMSILAPTO;Database=Northwind;Trusted_Connection=True;";
             SqlConnection con = new SqlConnection(connectionString);
@@ -94,16 +94,15 @@ namespace ERC_Test_Project.Controllers
 
                 if (sent[0] == "edit")
                 {
-                    SqlCommand command = new SqlCommand("update customers set " + sent[2] + " = '" + sent[3] + "' where customerID= '" + sent[1] + "';");
+                    SqlCommand command = new SqlCommand(String.Format("update customers set companyName='{0}', contactName='{1}', contactTitle='{2}', Address='{3}', City='{4}', Region='{5}', PostalCode='{6}', Country='{7}', Phone='{8}', Fax='{9}' where customerID='{10}'",
+                        sent[2], sent[3], sent[4], sent[5], sent[6], sent[7], sent[8], sent[9], sent[10], sent[11], sent[1]));
                     command.Connection = con;
                     command.ExecuteReader();
                 }
                 else if(sent[0] == "add") {
-                    Random random = new Random();
-                    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    string randomString = new string(Enumerable.Repeat(chars, 2).Select(s => s[random.Next(s.Length)]).ToArray());
-                    randomString = "AAA" + randomString;
-                    SqlCommand command = new SqlCommand("insert into customers values ('" + randomString + "', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 'empty', 1);");
+                    System.Diagnostics.Debug.Write("entered add");
+                    SqlCommand command = new SqlCommand(String.Format("insert into customers values ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', 1);",
+                        sent[1], sent[2], sent[3], sent[4], sent[5], sent[6], sent[7], sent[8], sent[9], sent[10], sent[11]));
                     command.Connection = con;
                     command.ExecuteReader();
                 }

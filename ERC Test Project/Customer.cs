@@ -26,5 +26,7 @@ namespace ERC_Test_Project
 
         public string fax { get; set; }
 
+        public int active { get; set; }
+
     }
 }

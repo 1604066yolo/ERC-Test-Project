@@ -1,0 +1,65 @@
+<button class="button-generic button-Add" type="button" (click)="basicModal.show()">Add Customer</button>
+
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="myModalLabel">Add New Customer - component</h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+          <label><sup>*</sup>
+            ID:
+
+            <input class="form-input" type="text" formControlName="id" required>
+          </label>
+          <label><sup>*</sup>
+            Company Name:
+            <input class="form-input" type="text" formControlName="companyName" required>
+          </label>
+          <label><sup>*</sup>
+            Contact Name:
+            <input class="form-input" type="text" formControlName="name" required>
+          </label>
+          <label><sup>*</sup>
+            Contact Title:
+            <input class="form-input" type="text" formControlName="title" required>
+          </label>
+          <label><sup>*</sup>
+            Address:
+            <input class="form-input" type="text" formControlName="address" required>
+          </label>
+          <label><sup>*</sup>
+            City:
+            <input class="form-input" type="text" formControlName="city" required>
+          </label>
+          <label>
+            Region:
+            <input class="form-input" type="text" formControlName="region">
+          </label>
+          <label><sup>*</sup>
+            Postal Code:
+            <input class="form-input" type="text" formControlName="postalCode" required>
+          </label>
+          <label><sup>*</sup>
+            Country:
+            <select class="custom-select" (change)="changeCountry($event)" formControlName="country" required>
+               <option value="" disabled>Country</option>
+               <option *ngFor="let country of countries" [ngValue]="country">{{country}}</option>
+            </select>
+          </label>
+          <label>
+            Phone Number:
+            <input class="form-input" type="text" formControlName="phoneNumber">
+          </label>
+          <label>
+            Fax:
+            <input class="form-input" type="text" formControlName="fax">
+          </label>
+          <button [disabled]="!addForm.valid" type="submit" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect>Add Customer</button>
+        </form>
+      </div>
+      
+      </div>
+    </div>
+  </div>
